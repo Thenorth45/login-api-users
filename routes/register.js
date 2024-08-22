@@ -18,7 +18,6 @@ router.post('/', async (req, res) => {
 
     const token = jwt.sign(
       { _id: user._id, role: user.role },
-      '2bfaf34cecd96c55bd5e95566ea96294c28aaf66161c5cbcbca705eb21f5f39b15f49b1dc22b5ebab71414c6a7c40ab6ff950615e8b2bdc31ec3d66d945ca2a6', // ใช้ key ที่เป็นความลับจริง ๆ ของคุณ
       { expiresIn: '1h' }
     );
 

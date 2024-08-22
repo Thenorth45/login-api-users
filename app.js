@@ -42,6 +42,7 @@ app.use('/users', usersRouter);
 app.use('/boxerdata', boxerdata)
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
+app.use('/upload', uploadprofile);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

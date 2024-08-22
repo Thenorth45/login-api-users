@@ -4,10 +4,12 @@ const bcrypt = require('bcrypt');
 const BoxerSchema = new mongoose.Schema({
     fullname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    username: {type: String, required: true, unique: true },
     password: { type: String, required: true },
-    address: { type: String, required: true },
-    telephone: { type: String, required: true },
-    role: { type: String, required: true, enum: ['ผู้ดูแลระบบ', 'ผู้ใช้ทั่วไป', 'ครูมวย', 'ผู้จัดการค่ายมวย'] },
+    address: { type: String, required: false },
+    telephone: { type: String, required: false },
+    profilePictureUrl: { type: String },
+    role: { type: String, required: true, enum: ['ผู้ดูแลระบบ', 'ผู้ใช้ทั่วไป', 'ครูมวย', 'ผู้จัดการค่ายมวย', 'นักมวย'] },
     updated_at: { type: Date, default: Date.now }
 })
 

@@ -18,4 +18,8 @@ router.get('/manager', authenticate, authorize(['ผู้จัดการค�
     res.send('Manager Content');
 });
 
+router.get('/boxer', authenticate, authorize(['นักมวย']), (req, res) => {
+    res.send('Boxer Content');
+});
+
 module.exports = router;

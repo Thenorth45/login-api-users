@@ -41,16 +41,17 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 // UPDATE a boxer by ID
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', auth, async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedBoxer = await Boxer.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedBoxer) {
-      return res.status(404).json({ message: 'Boxer not found' });
-    }
-    res.json({ message: 'Boxer updated successfully', updatedBoxer });
+      const user = await User.findByIdAndUpdate(
+          req.params.id,
+          req.body,
+          { new: true, runValidators: true }
+      );
+      if (!user) return res.status(404).json({ msg: 'User not found' });
+      res.json(user);
   } catch (err) {
-    next(err);
+      res.status(500).json({ msg: err.message });
   }
 });
 
