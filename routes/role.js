@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate, authorize } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middlewares/auth');
 
 router.get('/admin', authenticate, authorize(['ผู้ดูแลระบบ']), (req, res) => {
     res.send('Admin Content');
