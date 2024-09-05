@@ -7,7 +7,15 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 
+const myMiddleware = require('./middlewares/myMiddleware');
+
 const {register, login, refresh } = require("./Controllers/AuthController");
+
+const {getUsers, deleteUser, getUser} = require('./Controllers/UserController');
+
+const { addcamp, getcamp } = require('./Controllers/CampController');
+
+const {addtraining, gettraining} = require('./Controllers/TrainingController');
 
 const mongoose = require('mongoose');
 
@@ -32,9 +40,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use("/addcamp", addcamp);
+app.use("/getcamp", getcamp);
+
+app.use('/addtraining', addtraining);
+app.use('/gettraining', gettraining);
+
 app.use("/register", register);
 app.use("/login", login);
 app.use("/refresh", refresh);
+
+app.use('/users', getUsers);
+app.use('/user/:id', getUser);
+app.use('/user/:id', getUser);
+app.use('/user/:id', deleteUser);
+app.use(myMiddleware);
 
 // จับ 404 และส่งไปยังตัวจัดการข้อผิดพลาด
 app.use(function(req, res, next) {
