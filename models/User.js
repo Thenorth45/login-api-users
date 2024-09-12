@@ -10,6 +10,21 @@ const UserSchema = new mongoose.Schema({
     profilePictureUrl: { type: String, required: false },
     role: { type: String, required: false, enum: ['ผู้ดูแลระบบ', 'ผู้ใช้ทั่วไป', 'ครูมวย', 'ผู้จัดการค่ายมวย', 'นักมวย'] },
     updated_at: { type: Date, default: Date.now }
-})
+});
 
-module.exports = mongoose.model('User', UserSchema)
+UserSchema.statics.getUserIdByUsername = async function(username) {
+    try {
+        const user = await this.findOne({ username: username }).exec();
+        if (user) {
+            return user._id;
+        } else {
+            throw new Error('User not found');
+        }
+    } catch (error) {
+        console.error('Error retrieving user:', error);
+        throw error;
+    }
+};
+
+const User = mongoose.model('User', UserSchema);
+module.exports = User;

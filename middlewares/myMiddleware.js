@@ -7,7 +7,7 @@ function myMiddleware(req, res, next){
 
 
 jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-  if (err) return res.sendStatus(403).send("Access token expired");
+  if (err) return res.status(403).send("Access token expired");
   req.user = user;
   next();
 });

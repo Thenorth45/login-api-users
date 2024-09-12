@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
             { userId: user._id },
             process.env.REFRESH_TOKEN_SECRET
         );
-        res.json({ accessToken, refreshToken });
+        res.json({ accessToken, refreshToken, users: user });
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -49,15 +49,14 @@ exports.login = async (req, res) => {
 
 
 exports.refresh = async (req, res) => {
-    const { token } = req.body;
-    if (!token) return res.sendStatus(401);
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        const accessToken = jwt.sign(
-            { userId: user.userId },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "15m" }
-        );
-        res.json({ accessToken });
-    });
+    const refreshToken = req.body.token;
+    if (!refreshToken) return res.sendStatus(401);
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const newAccessToken = jwt.sign({ userId: decoded.userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
+        res.json({ accessToken: newAccessToken });
+    } catch (err) {
+        return res.status(403).send("Invalid refresh token");
+    }
 };
