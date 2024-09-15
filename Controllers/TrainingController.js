@@ -17,28 +17,32 @@ exports.addtraining = async (req, res) => {
 
         const userId = await User.getUserIdByUsername(username);
 
-        // Create a new training object using the data from the request body
+        if (!userId) {  // ตรวจสอบว่าพบ userId หรือไม่
+            return res.status(400).send('User not found');
+        }
+
         const newTraining = new Training({
-            userId: userId, // Convert string to ObjectId
-            runing: running ? {
+            username: username,
+            userId: userId,
+            running: running ? {
                 start_time: new Date(running.start_time),
                 end_time: new Date(running.end_time),
                 duration: running.duration,
                 distance: running.distance
             } : null,
-            ropejumping: ropeJumping ? {
+            ropeJumping: ropeJumping ? {
                 start_time: new Date(ropeJumping.start_time),
                 end_time: new Date(ropeJumping.end_time),
                 duration: ropeJumping.duration,
                 count: ropeJumping.count
             } : null,
-            punchingandkicking: punching ? {
+            punching: punching ? {
                 start_time: new Date(punching.start_time),
                 end_time: new Date(punching.end_time),
                 duration: punching.duration,
                 count: punching.count
             } : null,
-            weighttraining: weightTraining ? {
+            weightTraining: weightTraining ? {
                 start_time: new Date(weightTraining.start_time),
                 end_time: new Date(weightTraining.end_time),
                 duration: weightTraining.duration,
@@ -46,10 +50,7 @@ exports.addtraining = async (req, res) => {
             } : null
         });
 
-        // Save the training document to the database
         await newTraining.save();
-
-        // Send a success response
         res.status(201).json({ message: 'Training data saved successfully!' });
     } catch (error) {
         console.error('Error saving training data:', error);

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     fullname: { type: String, required: false },
     email: { type: String, required: false, unique: true },
-    username: {type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     address: { type: String, required: false },
     telephone: { type: String, required: false },
@@ -12,19 +12,12 @@ const UserSchema = new mongoose.Schema({
     updated_at: { type: Date, default: Date.now }
 });
 
-UserSchema.statics.getUserIdByUsername = async function(username) {
-    try {
-        const user = await this.findOne({ username: username }).exec();
-        if (user) {
-            return user._id;
-        } else {
-            throw new Error('User not found');
-        }
-    } catch (error) {
-        console.error('Error retrieving user:', error);
-        throw error;
-    }
+// เพิ่มฟังก์ชัน getUserIdByUsername ไปที่ schema.methods
+UserSchema.statics.getUserIdByUsername = async function (username) {
+    const user = await this.findOne({ username: username }).exec();
+    return user ? user._id : null;
 };
 
 const User = mongoose.model('User', UserSchema);
+
 module.exports = User;

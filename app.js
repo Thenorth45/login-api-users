@@ -50,9 +50,9 @@ app.use('/user/:id', getUser);
 app.use("/getcamp", getcamp);
 app.use('/gettraining', getTraining);
 
-app.use(myMiddleware);
 app.use('/addtraining', addtraining);
 app.use("/addcamp", addcamp);
+app.use(myMiddleware);
 app.use('/user/:id', getUser);
 app.use('/user/:id', deleteUser);
 
