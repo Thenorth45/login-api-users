@@ -12,7 +12,6 @@ const UserSchema = new mongoose.Schema({
     updated_at: { type: Date, default: Date.now }
 });
 
-// เพิ่มฟังก์ชัน getUserIdByUsername ไปที่ schema.methods
 UserSchema.statics.getUserIdByUsername = async function (username) {
     const user = await this.findOne({ username: username }).exec();
     return user ? user._id : null;

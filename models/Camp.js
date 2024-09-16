@@ -7,7 +7,8 @@ const CampSchema = new mongoose.Schema({
         latitude: Number,
         longitude: Number,
     },
+    boxers: [{ type: String }],
     updated_at: { type: Date, default: Date.now }
-})
+});
 
-module.exports = mongoose.model('CampSchema', CampSchema)
+module.exports = mongoose.model('Camp', CampSchema);

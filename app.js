@@ -11,7 +11,7 @@ const myMiddleware = require('./middlewares/myMiddleware');
 
 const {register, login, refresh } = require("./Controllers/AuthController");
 
-const {getUsers, deleteUser, getUser} = require('./Controllers/UserController');
+const {getUsers, deleteUser, getUser, addboxer} = require('./Controllers/UserController');
 
 const { addcamp, getcamp } = require('./Controllers/CampController');
 
@@ -52,6 +52,7 @@ app.use('/gettraining', getTraining);
 
 app.use('/addtraining', addtraining);
 app.use("/addcamp", addcamp);
+app.use("/addboxer", addboxer);
 app.use(myMiddleware);
 app.use('/user/:id', getUser);
 app.use('/user/:id', deleteUser);
