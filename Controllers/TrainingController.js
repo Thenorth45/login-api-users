@@ -12,42 +12,54 @@ exports.addtraining = async (req, res) => {
         const { username, running, ropeJumping, punching, weightTraining } = req.body;
 
         if (!username) {
-            return res.status(400).send('Username is required');
+            return res.status(400).json({ message: 'Username is required' });
         }
 
-        const userId = await User.getUserIdByUsername(username);
+        const user = await User.findOne({ username });
 
-        if (!userId) {  // ตรวจสอบว่าพบ userId หรือไม่
-            return res.status(400).send('User not found');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const existingTraining = await Training.findOne({
+            userId: user._id,
+            updated_at: { $gte: today }
+        });
+
+        if (existingTraining) {
+            return res.status(409).json({ message: 'Activity for today has already been recorded.' });
         }
 
         const newTraining = new Training({
-            username: username,
-            userId: userId,
-            running: running ? {
+            userId: user._id,
+            running: running && {
                 start_time: new Date(running.start_time),
                 end_time: new Date(running.end_time),
                 duration: running.duration,
                 distance: running.distance
-            } : null,
-            ropeJumping: ropeJumping ? {
+            },
+            ropeJumping: ropeJumping && {
                 start_time: new Date(ropeJumping.start_time),
                 end_time: new Date(ropeJumping.end_time),
                 duration: ropeJumping.duration,
                 count: ropeJumping.count
-            } : null,
-            punching: punching ? {
+            },
+            punching: punching && {
                 start_time: new Date(punching.start_time),
                 end_time: new Date(punching.end_time),
                 duration: punching.duration,
                 count: punching.count
-            } : null,
-            weightTraining: weightTraining ? {
+            },
+            weightTraining: weightTraining && {
                 start_time: new Date(weightTraining.start_time),
                 end_time: new Date(weightTraining.end_time),
                 duration: weightTraining.duration,
                 count: weightTraining.count
-            } : null
+            },
+            updated_at: new Date()
         });
 
         await newTraining.save();
@@ -58,18 +70,17 @@ exports.addtraining = async (req, res) => {
     }
 };
 
-// Get all activities for a user
+
+
 exports.getTraining = async (req, res) => {
     try {
-        // Find all training records
         const activities = await Training.find()
-            .populate('userId', 'name') // Populate the 'userId' field with the 'name' from User model
+            .populate('userId', 'name')
             .exec();
 
-        // Map the result to include the user's name
         const activitiesWithUserNames = activities.map(activity => ({
-            ...activity.toObject(), // Convert the Mongoose document to a plain object
-            userName: activity.userId.name // Add the user's name
+            ...activity.toObject(),
+            userName: activity.userId.name
         }));
 
         res.status(200).json(activitiesWithUserNames);

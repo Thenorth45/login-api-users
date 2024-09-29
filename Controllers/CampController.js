@@ -5,14 +5,22 @@ const Camp = require("../models/Camp");
 
 exports.addcamp = async (req, res) => {
     try {
-        const { name, description, location } = req.body;
+        const { name, description, location, imageUrl, boxers, manager } = req.body;
         console.log(req.body);
 
-        if (!name || !description || !location || !location.latitude || !location.longitude) {
+        if (!name || !description || !location || !location.latitude || !location.longitude || !manager) {
             return res.status(400).json({ message: 'Invalid input data' });
         }
 
-        const newCamp = new Camp({ name, description, location });
+        const newCamp = new Camp({
+            name,
+            description,
+            location,
+            imageUrl: imageUrl || '',
+            boxers: boxers || [],
+            manager,
+        });
+
         await newCamp.save();
         res.status(201).json(newCamp);
 
@@ -20,6 +28,8 @@ exports.addcamp = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+
 
 exports.getcamp = async (req, res) => {
     try {

@@ -6,7 +6,6 @@ const fs = require('fs');
 const User = require('../models/Boxer');
 const auth = require('../middleware/auth');
 
-// Set up storage for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -18,11 +17,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Upload image
 router.post('/', auth, upload.single('file'), async (req, res) => {
     try {
         const filePath = req.file.path;
-        // Update user with the new profile picture URL
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
         user.profilePictureUrl = filePath;

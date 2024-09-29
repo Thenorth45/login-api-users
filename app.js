@@ -11,7 +11,7 @@ const myMiddleware = require('./middlewares/myMiddleware');
 
 const {register, login, refresh } = require("./Controllers/AuthController");
 
-const {getUsers, deleteUser, getUser, addboxer} = require('./Controllers/UserController');
+const {getUsers, deleteUser, getUser, updateUser, addboxer} = require('./Controllers/UserController');
 
 const { addcamp, getcamp } = require('./Controllers/CampController');
 
@@ -28,24 +28,24 @@ mongoose.connect(process.env.MONGO_URI, {
 
 var app = express();
 
-// การตั้งค่า view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors({
-  origin: '*' // ระบุโดเมนที่อนุญาต
+  origin: '*'
 }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static('uploads'));
 
 app.use("/register", register);
 app.use("/login", login);
 app.use("/refresh", refresh);
 app.use('/users', getUsers);
-app.use('/user/:id', getUser);
+app.use('/getuser/:id', getUser);
 
 app.use("/getcamp", getcamp);
 app.use('/gettraining', getTraining);
@@ -53,23 +53,19 @@ app.use('/gettraining', getTraining);
 app.use('/addtraining', addtraining);
 app.use("/addcamp", addcamp);
 app.use("/addboxer", addboxer);
+
+app.use('/updateuser/:id', updateUser);
+app.use('/deleteuser/:id', deleteUser);
 app.use(myMiddleware);
-app.use('/user/:id', getUser);
-app.use('/user/:id', deleteUser);
 
-
-// จับ 404 และส่งไปยังตัวจัดการข้อผิดพลาด
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// ตัวจัดการข้อผิดพลาด
 app.use(function(err, req, res, next) {
-  // กำหนดค่า locals, ให้แสดงข้อผิดพลาดในช่วงพัฒนาเท่านั้น
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // แสดงหน้าข้อผิดพลาด
   res.status(err.status || 500);
   res.render('error');
 });

@@ -30,10 +30,10 @@ const weighttrainingActivityDetailsSchema = new mongoose.Schema({
 
 const TrainingSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
-    runing: { type: RunActivityDetailsSchema, default: null }, // Store detailed activity data
-    ropejumping: { type: RopejumpingActivityDetailsSchema, default: null },
-    punchingandkicking: { type: punchingandkickingActivityDetailsSchema, default: null },
-    weighttraining: { type: weighttrainingActivityDetailsSchema, default: null },
+    running: { type: RunActivityDetailsSchema, default: null },
+    ropeJumping: { type: RopejumpingActivityDetailsSchema, default: null },
+    punching: { type: punchingandkickingActivityDetailsSchema, default: null },
+    weightTraining: { type: weighttrainingActivityDetailsSchema, default: null },
     updated_at: { type: Date, default: Date.now }
 });
 
